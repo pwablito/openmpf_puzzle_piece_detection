@@ -1,0 +1,56 @@
+{
+    "componentName": "PuzzlePieceDetection",
+    "componentVersion": "9.0",
+    "middlewareVersion": "9.0",
+    "sourceLanguage": "python",
+    "batchLibrary": "PuzzlePieceDetection",
+    "algorithm": {
+        "name": "PuzzlePieceDetection",
+        "description": "Detect edge and regular puzzle pieces using a fine tuned YOLOv11 model",
+        "actionType": "DETECTION",
+        "trackType": "PUZZLE PIECE",
+        "outputChangedCounter": 1,
+        "requiresCollection": {
+            "states": []
+        },
+        "providesCollection": {
+            "states": [
+                "DETECTION"
+            ],
+            "properties": [
+                {
+                    "name": "confidence",
+                    "description": "minimum confidence of detections to include",
+                    "type": "FLOAT",
+                    "defaultValue": "0.7"
+                }
+            ]
+        }
+    },
+    "actions": [
+        {
+            "name": "PUZZLE PIECE DETECTION ACTION",
+            "description": "PUZZLE PIECE DETECTION ACTION",
+            "algorithm": "PuzzlePieceDetection",
+            "properties": []
+        }
+    ],
+    "tasks": [
+        {
+            "name": "PUZZLE PIECE DETECTION TASK",
+            "description": "PUZZLE PIECE DETECTION TASK",
+            "actions": [
+                "PUZZLE PIECE DETECTION ACTION"
+            ]
+        }
+    ],
+    "pipelines": [
+        {
+            "name": "PUZZLE PIECE DETECTION PIPELINE",
+            "description": "PUZZLE PIECE DETECTION PIPELINE",
+            "tasks": [
+                "PUZZLE PIECE DETECTION TASK"
+            ]
+        }
+    ]
+}
