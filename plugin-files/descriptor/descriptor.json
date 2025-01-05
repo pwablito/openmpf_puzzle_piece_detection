@@ -51,6 +51,14 @@
             "tasks": [
                 "PUZZLE PIECE DETECTION TASK"
             ]
+        },
+        {
+            "name": "PUZZLE PIECE DETECTION (WITH MARKUP) PIPELINE",
+            "description": "PUZZLE PIECE DETECTION (WITH MARKUP) PIPELINE",
+            "tasks": [
+                "PUZZLE PIECE DETECTION TASK",
+                "OCV GENERIC MARKUP TASK"
+            ]
         }
     ]
 }
