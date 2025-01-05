@@ -44,17 +44,32 @@ class PuzzlePieceDetection(mpf_util.VideoCaptureMixin, mpf_util.ImageReaderMixin
             }
         )
 
+    def construct_classes_argument(self, job_properties):
+        if job_properties["INCLUDE_EDGE"] not in ["true", "false"]:
+            raise ValueError("INCLUDE_EDGE must be either 'true' or 'false'")
+        if job_properties["INCLUDE_REGULAR"] not in ["true", "false"]:
+            raise ValueError("INCLUDE_REGULAR must be either 'true' or 'false'")
+        include_edge = job_properties["INCLUDE_EDGE"] == "true"
+        include_regular = job_properties["INCLUDE_REGULAR"] == "true"
+        classes = []
+        class_id_by_name = {name: i for i, name in self.model.names.items()}
+        if include_edge:
+            classes.append(class_id_by_name["edge"])
+        if include_regular:
+            classes.append(class_id_by_name["regular"])
+        return classes
+
     def get_detections_from_video_capture(self, video_job, video_capture):
         logger.info('[%s] Received video job: %s', video_job.job_name, video_job)
+        classes = self.construct_classes_argument(video_job.job_properties)
         self.init_model()
-        self.wait_for_model_to_load()
-        # self.model.predictor.trackers[0].reset()  # Needed to reset track ids
         tracked_objects = defaultdict(list)
         for frame_index, frame in enumerate(video_capture):
             results = self.model.track(
                 frame,
                 persist=True,
-                conf=float(video_job.job_properties["CONFIDENCE"])
+                conf=float(video_job.job_properties["CONFIDENCE"]),
+                classes=classes,
             )[0]
             for result in results:
                 if not result.boxes.is_track:
@@ -90,11 +105,13 @@ class PuzzlePieceDetection(mpf_util.VideoCaptureMixin, mpf_util.ImageReaderMixin
 
     def get_detections_from_image_reader(self, image_job, image_reader):
         logger.info('[%s] Received image job: %s', image_job.job_name, image_job)
+        classes = self.construct_classes_argument(image_job.job_properties)
         self.init_model()
         self.wait_for_model_to_load()
         results = self.model(
             image_reader.get_image(),
-            conf=float(image_job.job_properties["CONFIDENCE"])
+            conf=float(image_job.job_properties["CONFIDENCE"]),
+            classes=classes,
         )[0]
         detections = []
         for result in results:
