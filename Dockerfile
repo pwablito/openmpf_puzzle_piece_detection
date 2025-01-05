@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:experimental
 
 ARG BUILD_REGISTRY=openmpf/
-ARG BUILD_TAG=8.0.0
+ARG BUILD_TAG=9.0.0
 FROM ${BUILD_REGISTRY}openmpf_python_executor_ssb:${BUILD_TAG}
 
 RUN --mount=type=tmpfs,target=/var/cache/apt \
